@@ -112,8 +112,19 @@ int menuOptions () {
 }
 
 
-void carregaDadosIniciais () {
-    printf("[Ainda não implementado]");
+void carregaDadosIniciais (double matrixA[][2], double matrixB[][3], double matrixC[][2], int *amostras) {
+    *amostras = 50;
+    for (int i = 0; i < *amostras; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (j < 2) {
+                matrixA[i][j] = drawDoubleNumber(0, 100);
+                matrixB[i][j] = drawDoubleNumber(0, 100);
+                matrixC[i][j] = drawDoubleNumber(0, 100);
+            } else {
+                matrixB[i][j] = drawDoubleNumber(0, 100);
+            }
+        }
+    }
 }
 
 void insirirNovaAmostra (){
@@ -124,10 +135,10 @@ void relatorioProcessarExebir () {
     printf("[Ainda não implementado]");
 }
 
-void delegateChoice (int chosenOption) {
+void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3], double matrixC[][2], int *amostras) {
     switch (chosenOption) {
         case 1:
-            carregaDadosIniciais();
+            carregaDadosIniciais(matrixA, matrixB, matrixC, amostras);
             break;
         case 2:
             insirirNovaAmostra();
@@ -162,7 +173,7 @@ int main(void) {
 
     do {
         chosenOption = menuOptions();
-        delegateChoice(chosenOption);
+        delegateChoice(chosenOption, velocidades, sensoresFrontais, sensoresLaterais, &totalAmostras);
     } while (chosenOption != 4);
 
     return 0;
