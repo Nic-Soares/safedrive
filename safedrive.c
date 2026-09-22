@@ -4,6 +4,20 @@
 
 #define MAX_AMOSTRAS 100
 
+int drawIntNumber (int min, int max) {
+    if (min < max) {
+        return min + rand() % (max - min + 1);
+    }
+    return 0;
+}
+
+double drawDoubleNumber (double min, double max) {
+    if (min < max) {
+        return min + ((double)rand() / RAND_MAX) * (max - min);
+    }
+    return 0.0;
+}
+
 void perguntasIniciais (float *atrito, int *sensibilidade) {
     do {
         printf("Qual é o atrito atual? (asfalto seco ≈ 0.7–0.8, chão molhado ≈ 0.4–0.5, gelo ≈ 0.1–0.2)\n");
@@ -74,6 +88,8 @@ int main(void) {
 
     int total_amostras = 0;
     int chosenOption;
+
+    srand(time(NULL));
 
     perguntasIniciais(&atrito, &sensibilidade);
 
