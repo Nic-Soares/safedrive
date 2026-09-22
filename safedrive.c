@@ -4,51 +4,33 @@
 
 #define MAX_AMOSTRAS 100
 
-/* Funcao 1 - Carregar dados iniciais (opcao 1 do menu).
- * Preenche velocidades, sensores_frontais e sensores_laterais com 50
- * registros aleatorios. processamento e status ficam zerados aqui - sao
- * calculados depois, na opcao 3 do menu. */
-void inicializar_matrizes(float velocidades[][2], float sensores_frontais[][3],
-                           float sensores_laterais[][2], float processamento[][2],
-                           int status[][3], int *total_amostras);
+void perguntasIniciais (float *atrito, int *sensibilidade) {
+    do {
+        printf("Qual é o atrito atual? (asfalto seco ≈ 0.7–0.8, chão molhado ≈ 0.4–0.5, gelo ≈ 0.1–0.2)\n");
+        scanf("%f", atrito);
+    } while (*atrito < 0 || *atrito > 1);
 
-/* Funcao 2 - Inserir nova amostra (opcao 2 do menu).
- * So grava os valores ja lidos (pela main) na proxima linha vazia -
- * nao contem scanf, por causa da regra de isolamento de E/S. */
-void inserir_amostra(float velocidades[][2], float sensores_frontais[][3],
-                      float sensores_laterais[][2], int total_amostras,
-                      float vel_atual, float vel_frente,
-                      float radar, float lidar, float camera,
-                      float lat_esquerda, float lat_direita);
+    do {
+        printf("Qual é sua velocidade de reação? (1-Esportivo, 2-Normal, 3-Seguro) \n");
+        scanf("%d", sensibilidade);
+    } while (*sensibilidade < 1 || *sensibilidade > 3);
 
-/* Regra A - Fusao de sensores: mediana das 3 leituras frontais ->
- * processamento[][0] (distancia validada). */
-void fusao_sensores(float sensores_frontais[][3], float processamento[][2],
-                     int total_amostras);
-
-/* Regra B - Distancia segura de frenagem -> processamento[][1]. */
-void distancia_segura(float velocidades[][2], float processamento[][2],
-                       int total_amostras, float atrito, int sensibilidade);
-
-/* Regra C - Risco frontal / AEB -> status[][0]. */
-void risco_frontal(float velocidades[][2], float processamento[][2],
-                    int status[][3], int total_amostras);
-
-/* Regra D - Assistente de faixa dinamico -> status[][1] e status[][2]. */
-void assistente_faixa(float velocidades[][2], float sensores_laterais[][2],
-                       int status[][3], int total_amostras);
-
-/* Regra E - Unica funcao autorizada a usar printf apos os calculos. */
-void exibir_relatorio(float velocidades[][2], float sensores_frontais[][3],
-                       float sensores_laterais[][2], float processamento[][2],
-                       int status[][3], int total_amostras);
+}
 
 int main(void) {
-    /* TODO (sua vez):
-     * - declarar as 5 matrizes com MAX_AMOSTRAS linhas
-     * - declarar total_amostras = 0
-     * - ler atrito (float) e sensibilidade (int, 1-3)
-     * - laco do menu (4 opcoes) chamando as funcoes acima
-     */
+
+    float atrito;
+    int sensibilidade;
+    /* As 5 tabelas do programa - por enquanto so declaradas, vazias. */
+    float velocidades[MAX_AMOSTRAS][2];
+    float sensores_frontais[MAX_AMOSTRAS][3];
+    float sensores_laterais[MAX_AMOSTRAS][2];
+    float processamento[MAX_AMOSTRAS][2];
+    int status[MAX_AMOSTRAS][3];
+
+    int total_amostras = 0;
+
+    perguntasIniciais(&atrito, &sensibilidade);
+
     return 0;
 }
