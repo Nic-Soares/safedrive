@@ -85,10 +85,10 @@ double drawDoubleNumber (double min, double max) {
     return 0.0;
 }
 
-void perguntasIniciais (float *atrito, int *sensibilidade) {
+void perguntasIniciais (double *atrito, int *sensibilidade) {
     do {
         printf("Qual é o atrito atual? (asfalto seco ≈ 0.7–0.8, chão molhado ≈ 0.4–0.5, gelo ≈ 0.1–0.2)\n");
-        scanf("%f", atrito);
+        scanf("%lf", atrito);
     } while (*atrito < 0 || *atrito > 1);
 
     do {
@@ -144,16 +144,16 @@ void delegateChoice (int chosenOption) {
 
 int main(void) {
 
-    float atrito;
+    double atrito;
     int sensibilidade;
     /* As 5 tabelas do programa - por enquanto so declaradas, vazias. */
-    float velocidades[MAX_AMOSTRAS][2];
-    float sensores_frontais[MAX_AMOSTRAS][3];
-    float sensores_laterais[MAX_AMOSTRAS][2];
-    float processamento[MAX_AMOSTRAS][2];
+    double velocidades[MAX_AMOSTRAS][2];
+    double sensoresFrontais[MAX_AMOSTRAS][3];
+    double sensoresLaterais[MAX_AMOSTRAS][2];
+    double processamento[MAX_AMOSTRAS][2];
     int status[MAX_AMOSTRAS][3];
 
-    int total_amostras = 0;
+    int totalAmostras = 0;
     int chosenOption;
 
     srand(time(NULL));
