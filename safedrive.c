@@ -17,6 +17,50 @@ void perguntasIniciais (float *atrito, int *sensibilidade) {
 
 }
 
+int menuOptions () {
+    int chosenOption = 0;
+    do {
+        printf("1. Carregar dados iniciais \n");
+        printf("2. Inserir nova amostra \n");
+        printf("3. Processar e exibir relatório \n");
+        printf("4. Sair\n");
+        scanf("%d", &chosenOption);
+    } while (chosenOption < 1 || chosenOption > 4);
+
+    return chosenOption;
+}
+
+
+void carregaDadosIniciais () {
+    printf("[Ainda não implementado]");
+}
+
+void insirirNovaAmostra (){
+    printf("[Ainda não implementado]");
+}
+
+void relatorioProcessarExebir () {
+    printf("[Ainda não implementado]");
+}
+
+void delegateChoice (int chosenOption) {
+    switch (chosenOption) {
+        case 1:
+            carregaDadosIniciais();
+            break;
+        case 2:
+            insirirNovaAmostra();
+            break;
+        case 3:
+            relatorioProcessarExebir();
+            break;
+        case 4:
+            printf("Saindo...\n");
+            break;
+    }
+}
+
+
 int main(void) {
 
     float atrito;
@@ -29,8 +73,14 @@ int main(void) {
     int status[MAX_AMOSTRAS][3];
 
     int total_amostras = 0;
+    int chosenOption;
 
     perguntasIniciais(&atrito, &sensibilidade);
+
+    do {
+        chosenOption = menuOptions();
+        delegateChoice(chosenOption);
+    } while (chosenOption != 4);
 
     return 0;
 }
