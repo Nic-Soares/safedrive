@@ -111,15 +111,24 @@ int menuOptions () {
     return chosenOption;
 }
 
+void calculaMargemDinamica () {
+    
+}
+
+void calculaZonaAtencao () {
+    
+}
+
 
 void carregaDadosIniciais (double matrixA[][2], double matrixB[][3], double matrixC[][2], int *amostras) {
     *amostras = 50;
+    
     for (int i = 0; i < *amostras; i++) {
         for (int j = 0; j < 3; j++) {
             if (j < 2) {
-                matrixA[i][j] = drawDoubleNumber(0, 100);
+                matrixA[i][j] = drawDoubleNumber(5, 100);
                 matrixB[i][j] = drawDoubleNumber(0, 100);
-                matrixC[i][j] = drawDoubleNumber(0, 100);
+                matrixC[i][j] = drawDoubleNumber(0.1, 1);
             } else {
                 matrixB[i][j] = drawDoubleNumber(0, 100);
             }
@@ -157,7 +166,7 @@ int main(void) {
 
     double atrito;
     int sensibilidade;
-    /* As 5 tabelas do programa - por enquanto so declaradas, vazias. */
+
     double velocidades[MAX_AMOSTRAS][2];
     double sensoresFrontais[MAX_AMOSTRAS][3];
     double sensoresLaterais[MAX_AMOSTRAS][2];
