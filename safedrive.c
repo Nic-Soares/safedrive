@@ -206,7 +206,7 @@ void insirirNovaAmostra (double matrixA[][2], double matrixB[][3], double matrix
     *amostras = *amostras + 1;
 }
 
-void medianaSensores (double matrixB[][3], double processamento[][2], int amostras) {
+void medianaSensores (double matrixB[][3], double processamento[][2], int amostras) { // Regra A
   for (int i = 0; i < amostras; i++) {
     // Se o elemento 0 for o maior de todos - radar
         if (matrixB[i][0] > matrixB[i][1] && matrixB[i][0] > matrixB[i][2]) {
@@ -238,11 +238,11 @@ void medianaSensores (double matrixB[][3], double processamento[][2], int amostr
   }
 }
 
-void relatorioProcessarExibir () {
-    printf("[Ainda não implementado]");
+void relatorioProcessarExibir (double matrixB[][3], double processamento[][2], int amostras) {
+    medianaSensores(matrixB, processamento, amostras);
 }
 
-void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3], double matrixC[][2], int *amostras) {
+void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3], double matrixC[][2], double processamento[][2], int *amostras) {
     switch (chosenOption) {
         case 1:
             carregaDadosIniciais(matrixA, matrixB, matrixC, amostras);
@@ -251,7 +251,7 @@ void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3],
             insirirNovaAmostra(matrixA, matrixB, matrixC, amostras);
             break;
         case 3:
-            relatorioProcessarExibir();
+            relatorioProcessarExibir( matrixB,  processamento,  *amostras);
             break;
         case 4:
             printf("Saindo...\n");
@@ -280,7 +280,7 @@ int main(void) {
 
     do {
         chosenOption = menuOptions();
-        delegateChoice(chosenOption, velocidades, sensoresFrontais, sensoresLaterais, &totalAmostras);
+        delegateChoice(chosenOption, velocidades, sensoresFrontais, sensoresLaterais, processamento, &totalAmostras);
     } while (chosenOption != 4);
 
     return 0;
