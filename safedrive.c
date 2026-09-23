@@ -102,6 +102,10 @@
  * ============================================================================
  */
 
+/* ---------------------------------------------------------------------------
+ * SORTEIO — geradores de números aleatórios
+ * ------------------------------------------------------------------------- */
+
 int drawIntNumber (int min, int max) {
     if (min < max) {
         return min + rand() % (max - min + 1);
@@ -115,6 +119,10 @@ double drawDoubleNumber (double min, double max) {
     }
     return 0.0;
 }
+
+/* ---------------------------------------------------------------------------
+ * ENTRADA INTERATIVA — parâmetros iniciais e menu
+ * ------------------------------------------------------------------------- */
 
 void perguntasIniciais (double *atrito, int *sensibilidade) {
     do {
@@ -142,13 +150,9 @@ int menuOptions () {
     return chosenOption;
 }
 
-void calculaMargemDinamica () {
-    
-}
-
-void calculaZonaAtencao () {
-    
-}
+/* ---------------------------------------------------------------------------
+ * DADOS DE ENTRADA — opção 1 (sorteio) e opção 2 (digitação)
+ * ------------------------------------------------------------------------- */
 
 void carregaDadosIniciais (double matrixA[][2], double matrixB[][3], double matrixC[][2], int *amostras) {
     *amostras = 50;
@@ -204,6 +208,10 @@ void insirirNovaAmostra (double matrixA[][2], double matrixB[][3], double matrix
     *amostras = *amostras + 1;
 }
 
+/* ---------------------------------------------------------------------------
+ * REGRAS DE PROCESSAMENTO — opção 3, rodam em ordem A → B → C → D → E
+ * ------------------------------------------------------------------------- */
+
 void medianaSensores (double matrixB[][3], double processamento[][2], int amostras) { // Regra A
     for (int i = 0; i < amostras; i++) {
         // Se o elemento 0 for o maior de todos - radar
@@ -236,23 +244,22 @@ void medianaSensores (double matrixB[][3], double processamento[][2], int amostr
     }
 }
 
-void distanciaSeguraFrenagem (double matrixA[][2], double processamento[][2], double atrito, int sensibilidade, int amostras) {
-  double tempoReacao = 0.0, v = 0.0, distancia = 0.0;
+void distanciaSeguraFrenagem (double matrixA[][2], double processamento[][2], double atrito, int sensibilidade, int amostras) { // Regra B
+    double tempoReacao = 0.0, v = 0.0, distancia = 0.0;
 
-  if (sensibilidade == 1) {
-    tempoReacao = 1.0;
-  } else if  (sensibilidade == 2) {
-    tempoReacao = 1.5;
-  } else {
-    tempoReacao = 2.0;
-  }
+    if (sensibilidade == 1) {
+        tempoReacao = 1.0;
+    } else if (sensibilidade == 2) {
+        tempoReacao = 1.5;
+    } else {
+        tempoReacao = 2.0;
+    }
 
-  for (int i = 0; i < amostras; i++) {
-    v = matrixA[i][0] / 3.6;
-    distancia = v * tempoReacao + (v * v) / (2 * atrito * 9.81);
-    processamento[i][1] = distancia;
-  }
-  
+    for (int i = 0; i < amostras; i++) {
+        v = matrixA[i][0] / 3.6;
+        distancia = v * tempoReacao + (v * v) / (2 * atrito * 9.81);
+        processamento[i][1] = distancia;
+    }
 }
 
 void riscoFrontal (double matrixA[][2], double processamento[][2], int status[][3], int amostras) { // Regra C
@@ -276,9 +283,22 @@ void riscoFrontal (double matrixA[][2], double processamento[][2], int status[][
     }
 }
 
+// Regra D — auxiliares, corpo ainda a implementar
+void calculaMargemDinamica () {
+    
+}
+
+void calculaZonaAtencao () {
+    
+}
+
 void relatorioProcessarExibir (double matrixB[][3], double processamento[][2], int amostras) { // Regra E
     printf("[Relatório ainda não implementado]\n");
 }
+
+/* ---------------------------------------------------------------------------
+ * CONTROLE — despacho do menu e main
+ * ------------------------------------------------------------------------- */
 
 void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3], double matrixC[][2], double processamento[][2], int status[][3], int *amostras, double atrito, int sensibilidade) {
     switch (chosenOption) {
@@ -299,7 +319,6 @@ void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3],
             break;
     }
 }
-
 
 int main(void) {
 
