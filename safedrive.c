@@ -238,11 +238,15 @@ void medianaSensores (double matrixB[][3], double processamento[][2], int amostr
     }
 }
 
+void distanciaSeguraFrenagem (double matrixA[][2], double processamento[][2], double atrito, int sensibilidade, int amostras) {
+  
+}
+
 void relatorioProcessarExibir (double matrixB[][3], double processamento[][2], int amostras) { // Regra E
     printf("[Relatório ainda não implementado]\n");
 }
 
-void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3], double matrixC[][2], double processamento[][2], int *amostras) {
+void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3], double matrixC[][2], double processamento[][2], int *amostras, double atrito, int sensibilidade) {
     switch (chosenOption) {
         case 1:
             carregaDadosIniciais(matrixA, matrixB, matrixC, amostras);
@@ -281,7 +285,7 @@ int main(void) {
 
     do {
         chosenOption = menuOptions();
-        delegateChoice(chosenOption, velocidades, sensoresFrontais, sensoresLaterais, processamento, &totalAmostras);
+        delegateChoice(chosenOption, velocidades, sensoresFrontais, sensoresLaterais, processamento, &totalAmostras, atrito, sensibilidade);
     } while (chosenOption != 4);
 
     return 0;
