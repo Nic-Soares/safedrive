@@ -207,39 +207,39 @@ void insirirNovaAmostra (double matrixA[][2], double matrixB[][3], double matrix
 }
 
 void medianaSensores (double matrixB[][3], double processamento[][2], int amostras) { // Regra A
-  for (int i = 0; i < amostras; i++) {
-    // Se o elemento 0 for o maior de todos - radar
+    for (int i = 0; i < amostras; i++) {
+        // Se o elemento 0 for o maior de todos - radar
         if (matrixB[i][0] > matrixB[i][1] && matrixB[i][0] > matrixB[i][2]) {
-          // A mediana será o maior entre os dois restantes (1 e 2)
-          if (matrixB[i][1] > matrixB[i][2]) {
-            processamento[i][0] = matrixB[i][1];
-          } else {
-            processamento[i][0] = matrixB[i][2];
-          }
+            // A mediana será o maior entre os dois restantes (1 e 2)
+            if (matrixB[i][1] > matrixB[i][2]) {
+                processamento[i][0] = matrixB[i][1];
+            } else {
+                processamento[i][0] = matrixB[i][2];
+            }
         }
         // Se o elemento 1 for o maior de todos - lidar
         else if (matrixB[i][1] > matrixB[i][0] && matrixB[i][1] > matrixB[i][2]) {
-          // A mediana será o maior entre os dois restantes (0 e 2)
-          if (matrixB[i][0] > matrixB[i][2]) {
-            processamento[i][0] = matrixB[i][0];
-          } else {
-            processamento[i][0] = matrixB[i][2];
-          }
+            // A mediana será o maior entre os dois restantes (0 e 2)
+            if (matrixB[i][0] > matrixB[i][2]) {
+                processamento[i][0] = matrixB[i][0];
+            } else {
+                processamento[i][0] = matrixB[i][2];
+            }
         }
-        // Se o elemento 2 for o maior de todos (ou em caso de empates) - camera
+        // Chegou aqui: ou a camera é a maior, ou radar e lidar empataram no topo
         else {
-          // A mediana será o maior entre os dois restantes (0 e 1)
-          if (matrixB[i][0] > matrixB[i][1]) {
-            processamento[i][0] = matrixB[i][0];
-          } else {
-            processamento[i][0] = matrixB[i][1];
-          }
+            // Nos dois casos, a mediana é o maior entre radar e lidar (0 e 1)
+            if (matrixB[i][0] > matrixB[i][1]) {
+                processamento[i][0] = matrixB[i][0];
+            } else {
+                processamento[i][0] = matrixB[i][1];
+            }
         }
-  }
+    }
 }
 
-void relatorioProcessarExibir (double matrixB[][3], double processamento[][2], int amostras) {
-    medianaSensores(matrixB, processamento, amostras);
+void relatorioProcessarExibir (double matrixB[][3], double processamento[][2], int amostras) { // Regra E
+    printf("[Relatório ainda não implementado]\n");
 }
 
 void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3], double matrixC[][2], double processamento[][2], int *amostras) {
@@ -251,7 +251,8 @@ void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3],
             insirirNovaAmostra(matrixA, matrixB, matrixC, amostras);
             break;
         case 3:
-            relatorioProcessarExibir( matrixB,  processamento,  *amostras);
+            medianaSensores(matrixB, processamento, *amostras);
+            relatorioProcessarExibir(matrixB, processamento, *amostras);
             break;
         case 4:
             printf("Saindo...\n");
