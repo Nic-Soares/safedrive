@@ -30,6 +30,37 @@
  *                          col 1 = status faixa esquerda (Regra D)
  *                          col 2 = status faixa direita (Regra D)
  *
+ * VISÃO DAS MATRIZES — a mesma linha i em todas é a mesma amostra
+ * (valores de exemplo; linhas de totalAmostras até 99 ficam vazias)
+ *
+ *            velocidades         sensoresFrontais            sensoresLaterais
+ *          +-------+-------+   +-------+-------+-------+   +-------+-------+
+ *          | atual | frente|   | radar | lidar | camera|   |  esq  |  dir  |
+ *          |  [0]  |  [1]  |   |  [0]  |  [1]  |  [2]  |   |  [0]  |  [1]  |
+ *          +-------+-------+   +-------+-------+-------+   +-------+-------+
+ *  i = 0   |  90.0 |  70.0 |   |  42.0 |   7.5 |  19.3 |   |  0.45 |  0.80 |
+ *  i = 1   |  60.0 |  65.0 |   |  30.1 |  31.0 |  29.8 |   |  0.95 |  0.30 |
+ *   ...    |  ...  |  ...  |   |  ...  |  ...  |  ...  |   |  ...  |  ...  |
+ *          +-------+-------+   +-------+-------+-------+   +-------+-------+
+ *               ENTRADA (dados crus: sorteio na opção 1, digitação na opção 2)
+ *
+ *                             processamento                   status (int)
+ *                       +-----------+-----------+   +-------+-------+-------+
+ *                       | validada  |  segura   |   |frontal|  esq  |  dir  |
+ *                       |    [0]    |    [1]    |   |  [0]  |  [1]  |  [2]  |
+ *                       +-----------+-----------+   +-------+-------+-------+
+ *  i = 0                |  Regra A  |  Regra B  |   |   C   |   D   |   D   |
+ *  i = 1                |    ...    |    ...    |   |  ...  |  ...  |  ...  |
+ *                       +-----------+-----------+   +-------+-------+-------+
+ *                            SAÍDA (preenchida pelas Regras, na opção 3)
+ *
+ * FLUXO DE UMA LINHA i
+ *   sensoresFrontais[i][0..2] --A: mediana--> processamento[i][0]
+ *   velocidades[i][0] + atrito + sensib. --B--> processamento[i][1]
+ *   velocidades[i][0..1] + processamento[i][0..1] --C--> status[i][0]
+ *   velocidades[i][0] + sensoresLaterais[i][0..1] --D--> status[i][1..2]
+ *   tudo acima --E: printf--> relatório
+ *
  * MENU (main, laço até sair)
  * 1. Carregar dados iniciais — 50 registros aleatórios
  * 2. Inserir nova amostra — lê velocidades + 5 leituras de sensores, grava
@@ -119,7 +150,6 @@ void calculaZonaAtencao () {
     
 }
 
-
 void carregaDadosIniciais (double matrixA[][2], double matrixB[][3], double matrixC[][2], int *amostras) {
     *amostras = 50;
     
@@ -135,6 +165,8 @@ void carregaDadosIniciais (double matrixA[][2], double matrixB[][3], double matr
         }
     }
 }
+
+
 
 void insirirNovaAmostra (double matrixA[][2], double matrixB[][3], double matrixC[][2], int *amostras){
     double velocidadeAtual, velocidadeCarroDaFrente, radar, lidar, camera,
@@ -174,7 +206,39 @@ void insirirNovaAmostra (double matrixA[][2], double matrixB[][3], double matrix
     *amostras = *amostras + 1;
 }
 
-void relatorioProcessarExebir () {
+void medianaSensores (double matrixB[][3], double processamento[][2], int amostras) {
+  for (int i = 0; i < amostras; i++) {
+    // Se o elemento 0 for o maior de todos - radar
+        if (matrixB[i][0] > matrixB[i][1] && matrixB[i][0] > matrixB[i][2]) {
+          // A mediana será o maior entre os dois restantes (1 e 2)
+          if (matrixB[i][1] > matrixB[i][2]) {
+            processamento[i][0] = matrixB[i][1];
+          } else {
+            processamento[i][0] = matrixB[i][2];
+          }
+        }
+        // Se o elemento 1 for o maior de todos - lidar
+        else if (matrixB[i][1] > matrixB[i][0] && matrixB[i][1] > matrixB[i][2]) {
+          // A mediana será o maior entre os dois restantes (0 e 2)
+          if (matrixB[i][0] > matrixB[i][2]) {
+            processamento[i][0] = matrixB[i][0];
+          } else {
+            processamento[i][0] = matrixB[i][2];
+          }
+        }
+        // Se o elemento 2 for o maior de todos (ou em caso de empates) - camera
+        else {
+          // A mediana será o maior entre os dois restantes (0 e 1)
+          if (matrixB[i][0] > matrixB[i][1]) {
+            processamento[i][0] = matrixB[i][0];
+          } else {
+            processamento[i][0] = matrixB[i][1];
+          }
+        }
+  }
+}
+
+void relatorioProcessarExibir () {
     printf("[Ainda não implementado]");
 }
 
@@ -187,7 +251,7 @@ void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3],
             insirirNovaAmostra(matrixA, matrixB, matrixC, amostras);
             break;
         case 3:
-            relatorioProcessarExebir();
+            relatorioProcessarExibir();
             break;
         case 4:
             printf("Saindo...\n");
