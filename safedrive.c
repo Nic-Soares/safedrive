@@ -46,7 +46,7 @@ int carregaDadosIniciais (double matrixA[][2], double matrixB[][3], double matri
       if (j < 2) {
         matrixA[i][j] = drawDoubleNumber(5, 100);
         matrixB[i][j] = drawDoubleNumber(0, 100);
-        matrixC[i][j] = drawDoubleNumber(0.1, 1);
+        matrixC[i][j] = drawDoubleNumber(0.3, 1.5);
       } else {
         matrixB[i][j] = drawDoubleNumber(0, 100);
       }
