@@ -8,8 +8,8 @@
  * SAFEDRIVE — Processamento de telemetria ADAS (Projeto 1, AP2 2026.2)
  *
  * Integrantes do grupo:
- *   NOME COMPLETO 1 — MATRÍCULA 1
- *   NOME COMPLETO 2 — MATRÍCULA 2
+ *   Nicolas Soares Santos — RA: 10370082
+ *   Pedro Evangelisti     — RA: 10728508
  *
  * Organização (restrições do enunciado):
  * - Toda leitura (scanf) acontece na main.
@@ -18,20 +18,11 @@
  * - Resultados só são impressos pela função de relatório (Regra E).
  * - Sem struct, alocação dinâmica, ponteiros explícitos ou variáveis
  *   globais: o total de amostras volta para a main pelo return.
- *
- * Resumo do enunciado, matrizes e Regras A-E: ver ENUNCIADO.md
  */
 
 /* ---------------------------------------------------------------------------
- * SORTEIO — geradores de números aleatórios
+ * SORTEIO — gerador de números aleatórios
  * ------------------------------------------------------------------------- */
-
-int drawIntNumber (int min, int max) {
-  if (min < max) {
-    return min + rand() % (max - min + 1);
-  }
-  return 0;
-}
 
 double drawDoubleNumber (double min, double max) {
   if (min < max) {
@@ -208,12 +199,12 @@ void relatorioProcessarExibir (double matrixA[][2], double matrixB[][3], double 
     printf("Faixa esquerda: %.2f m | Faixa direita: %.2f m\n", matrixC[i][0], matrixC[i][1]);
 
     // Dados processados (Regras A e B)
-    printf("Distância validada: %.1f m | Distância segura: %.1f m\n", processamento[i][0], processamento[i][1]);
+    printf("Distância validada: %.1f m | Distância segura exigida: %.1f m\n", processamento[i][0], processamento[i][1]);
 
     // Status frontal (Regra C)
     printf("Status frontal: ");
     if (status[i][0] == 2) {
-      printf("RISCO DE COLISÃO (AEB acionado)\n");
+      printf("RISCO DE COLISÃO (AEB ACIONADO)\n");
     } else if (status[i][0] == 1) {
       printf("ATENÇÃO\n");
     } else {
@@ -246,13 +237,15 @@ void relatorioProcessarExibir (double matrixA[][2], double matrixB[][3], double 
       pior = status[i][2];
     }
 
-    printf("STATUS GERAL: ");
     if (pior == 2) {
-      printf("INTERVENÇÃO CRÍTICA EXIGIDA\n");
+      // Alerta máximo: o enunciado pede exibição em destaque
+      printf("**************************************************\n");
+      printf("STATUS GERAL: INTERVENÇÃO CRÍTICA EXIGIDA\n");
+      printf("**************************************************\n");
     } else if (pior == 1) {
-      printf("ATENÇÃO\n");
+      printf("STATUS GERAL: ATENÇÃO\n");
     } else {
-      printf("NORMAL\n");
+      printf("STATUS GERAL: NORMAL\n");
     }
   }
 }
@@ -318,7 +311,7 @@ int main(void) {
   do {
     printf("\n1. Carregar dados iniciais\n");
     printf("2. Inserir nova amostra\n");
-    printf("3. Processar e exibir relatório\n");
+    printf("3. Processar e exibir relatório de riscos\n");
     printf("4. Sair\n");
     lidos = scanf("%d", &opcao);
     if (lidos == EOF) {
