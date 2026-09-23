@@ -239,6 +239,21 @@ void medianaSensores (double matrixB[][3], double processamento[][2], int amostr
 }
 
 void distanciaSeguraFrenagem (double matrixA[][2], double processamento[][2], double atrito, int sensibilidade, int amostras) {
+  double tempoReacao = 0.0, v = 0.0, distancia = 0.0;
+
+  if (sensibilidade == 1) {
+    tempoReacao = 1.0;
+  } else if  (sensibilidade == 2) {
+    tempoReacao = 1.5;
+  } else {
+    tempoReacao = 2.0;
+  }
+
+  for (int i = 0; i < amostras; i++) {
+    v = matrixA[i][0] / 3.6;
+    distancia = v * tempoReacao + (v * v) / (2 * atrito * 9.81);
+    processamento[i][1] = distancia;
+  }
   
 }
 
@@ -256,6 +271,7 @@ void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3],
             break;
         case 3:
             medianaSensores(matrixB, processamento, *amostras);
+            distanciaSeguraFrenagem(matrixA, processamento, atrito, sensibilidade, *amostras);
             relatorioProcessarExibir(matrixB, processamento, *amostras);
             break;
         case 4:
