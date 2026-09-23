@@ -5,7 +5,20 @@
 #define MAX_AMOSTRAS 100
 
 /*
- * SAFEDRIVE — Processamento de telemetria ADAS (Projeto 1, AP2)
+ * SAFEDRIVE — Processamento de telemetria ADAS (Projeto 1, AP2 2026.2)
+ *
+ * Integrantes do grupo:
+ *   NOME COMPLETO 1 — MATRÍCULA 1
+ *   NOME COMPLETO 2 — MATRÍCULA 2
+ *
+ * Organização (restrições do enunciado):
+ * - Toda leitura (scanf) acontece na main.
+ * - Funções de cálculo (Regras A-D) só recebem dados por parâmetro, sem
+ *   scanf nem printf.
+ * - Resultados só são impressos pela função de relatório (Regra E).
+ * - Sem struct, alocação dinâmica, ponteiros explícitos ou variáveis
+ *   globais: o total de amostras volta para a main pelo return.
+ *
  * Resumo do enunciado, matrizes e Regras A-E: ver ENUNCIADO.md
  */
 
@@ -28,43 +41,14 @@ double drawDoubleNumber (double min, double max) {
 }
 
 /* ---------------------------------------------------------------------------
- * ENTRADA INTERATIVA — parâmetros iniciais e menu
- * ------------------------------------------------------------------------- */
-
-void perguntasIniciais (double *atrito, int *sensibilidade) {
-  do {
-    printf("Qual é o atrito atual? (asfalto seco ≈ 0.7–0.8, chão molhado ≈ 0.4–0.5, gelo ≈ 0.1–0.2)\n");
-    scanf("%lf", atrito);
-  } while (*atrito <= 0 || *atrito > 1);  // 0 dividiria por zero na Regra B
-
-  do {
-    printf("Qual é sua velocidade de reação? (1-Esportivo, 2-Normal, 3-Seguro) \n");
-    scanf("%d", sensibilidade);
-  } while (*sensibilidade < 1 || *sensibilidade > 3);
-
-}
-
-int menuOptions () {
-  int chosenOption = 0;
-  do {
-    printf("1. Carregar dados iniciais \n");
-    printf("2. Inserir nova amostra \n");
-    printf("3. Processar e exibir relatório \n");
-    printf("4. Sair\n");
-    scanf("%d", &chosenOption);
-  } while (chosenOption < 1 || chosenOption > 4);
-
-  return chosenOption;
-}
-
-/* ---------------------------------------------------------------------------
  * DADOS DE ENTRADA — opção 1 (sorteio) e opção 2 (digitação)
  * ------------------------------------------------------------------------- */
 
-void carregaDadosIniciais (double matrixA[][2], double matrixB[][3], double matrixC[][2], int *amostras) {
-  *amostras = 50;
+// Preenche as 50 primeiras linhas com valores sorteados e devolve o novo total
+int carregaDadosIniciais (double matrixA[][2], double matrixB[][3], double matrixC[][2]) {
+  int amostras = 50;
 
-  for (int i = 0; i < *amostras; i++) {
+  for (int i = 0; i < amostras; i++) {
     for (int j = 0; j < 3; j++) {
       if (j < 2) {
         matrixA[i][j] = drawDoubleNumber(5, 100);
@@ -75,49 +59,23 @@ void carregaDadosIniciais (double matrixA[][2], double matrixB[][3], double matr
       }
     }
   }
+
+  return amostras;
 }
 
-void inserirNovaAmostra (double matrixA[][2], double matrixB[][3], double matrixC[][2], int *amostras){
-  double velocidadeAtual, velocidadeCarroDaFrente, radar, lidar, camera,
-         distanciaFaixaEsquerda, distanciaFaixaDireita;
+// Grava as 7 leituras (já lidas na main) na próxima linha vazia e devolve o novo total
+int inserirNovaAmostra (double matrixA[][2], double matrixB[][3], double matrixC[][2], int amostras, double leitura[]) {
+  matrixA[amostras][0] = leitura[0];  // velocidade atual
+  matrixA[amostras][1] = leitura[1];  // velocidade do veículo da frente
 
-  if (*amostras >= MAX_AMOSTRAS) {
-    printf("Limite de %d amostras atingido. Nenhuma amostra foi inserida.\n", MAX_AMOSTRAS);
-    return;
-  }
+  matrixB[amostras][0] = leitura[2];  // radar
+  matrixB[amostras][1] = leitura[3];  // lidar
+  matrixB[amostras][2] = leitura[4];  // câmera
 
-  printf("Velocidade atual (km/h): ");
-  scanf("%lf", &velocidadeAtual);
+  matrixC[amostras][0] = leitura[5];  // faixa esquerda
+  matrixC[amostras][1] = leitura[6];  // faixa direita
 
-  printf("Velocidade do veículo da frente (km/h): ");
-  scanf("%lf", &velocidadeCarroDaFrente);
-
-  printf("Leitura do radar (m): ");
-  scanf("%lf", &radar);
-
-  printf("Leitura do lidar (m): ");
-  scanf("%lf", &lidar);
-
-  printf("Leitura da câmera (m): ");
-  scanf("%lf", &camera);
-
-  printf("Distância da faixa esquerda (m): ");
-  scanf("%lf", &distanciaFaixaEsquerda);
-
-  printf("Distância da faixa direita (m): ");
-  scanf("%lf", &distanciaFaixaDireita);
-
-  matrixA[*amostras][0] = velocidadeAtual;
-  matrixA[*amostras][1] = velocidadeCarroDaFrente;
-
-  matrixB[*amostras][0] = radar;
-  matrixB[*amostras][1] = lidar;
-  matrixB[*amostras][2] = camera;
-
-  matrixC[*amostras][0] = distanciaFaixaEsquerda;
-  matrixC[*amostras][1] = distanciaFaixaDireita;
-
-  *amostras = *amostras + 1;
+  return amostras + 1;
 }
 
 /* ---------------------------------------------------------------------------
@@ -300,52 +258,115 @@ void relatorioProcessarExibir (double matrixA[][2], double matrixB[][3], double 
 }
 
 /* ---------------------------------------------------------------------------
- * CONTROLE — despacho do menu e main
+ * MAIN — toda a leitura de dados e o laço do menu
  * ------------------------------------------------------------------------- */
 
-void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3], double matrixC[][2], double processamento[][2], int status[][3], int *amostras, double atrito, int sensibilidade) {
-  switch (chosenOption) {
-    case 1:
-      carregaDadosIniciais(matrixA, matrixB, matrixC, amostras);
-      break;
-    case 2:
-      inserirNovaAmostra(matrixA, matrixB, matrixC, amostras);
-      break;
-    case 3:
-      medianaSensores(matrixB, processamento, *amostras);
-      distanciaSeguraFrenagem(matrixA, processamento, atrito, sensibilidade, *amostras);
-      riscoFrontal(matrixA, processamento, status, *amostras);
-      assistenteFaixa(matrixA, matrixC, status, *amostras);
-      relatorioProcessarExibir (matrixA, matrixB, matrixC, processamento, status, *amostras);
-      break;
-    case 4:
-      printf("Saindo...\n");
-      break;
-  }
-}
-
 int main(void) {
-
   double atrito;
   int sensibilidade;
 
   double velocidades[MAX_AMOSTRAS][2];
-  double sensoresFrontais[MAX_AMOSTRAS][3];
-  double sensoresLaterais[MAX_AMOSTRAS][2];
+  double sensores_frontais[MAX_AMOSTRAS][3];
+  double sensores_laterais[MAX_AMOSTRAS][2];
   double processamento[MAX_AMOSTRAS][2];
   int status[MAX_AMOSTRAS][3];
 
   int totalAmostras = 0;
-  int chosenOption;
+  int opcao = 0;
+  int lidos;     // retorno do scanf: quantos valores foram lidos
+  int c;         // usado para descartar o que sobrou na linha após uma entrada inválida
+
+  char perguntas[7][50] = {
+    "Velocidade atual (km/h): ",
+    "Velocidade do veículo da frente (km/h): ",
+    "Leitura do radar (m): ",
+    "Leitura do lidar (m): ",
+    "Leitura da câmera (m): ",
+    "Distância da faixa esquerda (m): ",
+    "Distância da faixa direita (m): "
+  };
+  double leitura[7];
 
   srand(time(NULL));
 
-  perguntasIniciais(&atrito, &sensibilidade);
+  // Parâmetros iniciais. Se o scanf não conseguir ler um número, a linha é
+  // descartada e a pergunta se repete (evita laço infinito com letras).
+  do {
+    printf("Qual é o atrito da via? (asfalto seco ≈ 0.7–0.8, chão molhado ≈ 0.4–0.5, gelo ≈ 0.1–0.2)\n");
+    lidos = scanf("%lf", &atrito);
+    if (lidos == EOF) {
+      return 0;
+    }
+    if (lidos != 1) {
+      while ((c = getchar()) != '\n' && c != EOF);
+      atrito = -1;
+    }
+  } while (atrito <= 0 || atrito > 1);  // 0 dividiria por zero na Regra B
 
   do {
-    chosenOption = menuOptions();
-    delegateChoice(chosenOption, velocidades, sensoresFrontais, sensoresLaterais, processamento, status, &totalAmostras, atrito, sensibilidade);
-  } while (chosenOption != 4);
+    printf("Qual é a sensibilidade do ADAS? (1-Esportivo, 2-Normal, 3-Seguro)\n");
+    lidos = scanf("%d", &sensibilidade);
+    if (lidos == EOF) {
+      return 0;
+    }
+    if (lidos != 1) {
+      while ((c = getchar()) != '\n' && c != EOF);
+      sensibilidade = 0;
+    }
+  } while (sensibilidade < 1 || sensibilidade > 3);
+
+  do {
+    printf("\n1. Carregar dados iniciais\n");
+    printf("2. Inserir nova amostra\n");
+    printf("3. Processar e exibir relatório\n");
+    printf("4. Sair\n");
+    lidos = scanf("%d", &opcao);
+    if (lidos == EOF) {
+      return 0;
+    }
+    if (lidos != 1) {
+      while ((c = getchar()) != '\n' && c != EOF);
+      opcao = 0;
+    }
+
+    switch (opcao) {
+      case 1:
+        totalAmostras = carregaDadosIniciais(velocidades, sensores_frontais, sensores_laterais);
+        printf("%d amostras carregadas.\n", totalAmostras);
+        break;
+      case 2:
+        if (totalAmostras >= MAX_AMOSTRAS) {
+          printf("Limite de %d amostras atingido. Nenhuma amostra foi inserida.\n", MAX_AMOSTRAS);
+          break;
+        }
+        for (int k = 0; k < 7; k++) {
+          do {
+            printf("%s", perguntas[k]);
+            lidos = scanf("%lf", &leitura[k]);
+            if (lidos == EOF) {
+              return 0;
+            }
+            if (lidos != 1) {
+              while ((c = getchar()) != '\n' && c != EOF);
+            }
+          } while (lidos != 1);
+        }
+        totalAmostras = inserirNovaAmostra(velocidades, sensores_frontais, sensores_laterais, totalAmostras, leitura);
+        break;
+      case 3:
+        medianaSensores(sensores_frontais, processamento, totalAmostras);
+        distanciaSeguraFrenagem(velocidades, processamento, atrito, sensibilidade, totalAmostras);
+        riscoFrontal(velocidades, processamento, status, totalAmostras);
+        assistenteFaixa(velocidades, sensores_laterais, status, totalAmostras);
+        relatorioProcessarExibir(velocidades, sensores_frontais, sensores_laterais, processamento, status, totalAmostras);
+        break;
+      case 4:
+        printf("Saindo...\n");
+        break;
+      default:
+        printf("Opção inválida. Escolha de 1 a 4.\n");
+    }
+  } while (opcao != 4);
 
   return 0;
 }

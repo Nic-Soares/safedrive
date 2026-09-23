@@ -9,8 +9,8 @@ Fonte completa: `Projeto 1 — Enunciado (AlgProII-2026.2 Projeto1).pdf` (no Vau
 
 - Proibido: `struct`, `malloc`/`realloc` e variável global.
 - O enunciado também cita "ponteiros explícitos" como proibidos.
-- Isolamento de E/S: as funções de cálculo (Regras A a D) não podem ter `scanf` nem `printf`. Elas só recebem dados por parâmetro. Só a função de relatório (Regra E) imprime resultados.
-  - Funções interativas (`perguntasIniciais`, `menuOptions`, `insirirNovaAmostra`) leem entradas e imprimem prompts. Isso segue a tabela de funções da nota do Vault `Projetos — Algoritmos e Programação II.md`. Ainda falta confirmar no PDF.
+- Isolamento de E/S (texto literal do PDF): as funções de cálculo não podem ter `scanf` nem `printf`, e todos os dados chegam a elas por parâmetro. Só a função de relatório pode ter `printf`, e **a leitura de dados acontece exclusivamente na `main`**. A `main` também pede o atrito e a sensibilidade logo no início.
+  - No código: todo `scanf` e todo prompt ficam na `main`, e os resultados só são impressos em `relatorioProcessarExibir`. O total de amostras volta para a `main` pelo `return` de `carregaDadosIniciais`/`inserirNovaAmostra`, então nenhuma função precisa de ponteiro.
 
 ## Dados
 
@@ -124,10 +124,22 @@ Esta é a única função que imprime resultados. Para cada amostra, ela mostra:
   - senão, algum = 1 → `ATENÇÃO`;
   - senão → `NORMAL`.
 
+## Avaliação (v2 do enunciado, 23/09/2026)
+
+| item | pontos |
+|---|---|
+| Estrutura, matrizes, restrições e separação E/P/S | 1,0 |
+| Entrada, inicialização e menu | 1,5 |
+| Processamento (Regras A a D, 1,0 cada) | 4,0 |
+| Relatório | 1,5 |
+| Apresentação (domínio, demonstração, respostas) | 2,0 |
+
+Penalidades: não compilar ou **travar** → zero; sem identificação do grupo no `.c` → −1; binários na entrega → −1; formato incorreto → −1. A entrega é um `.zip` só com os `.c`, enviado pelo Moodle por uma pessoa do grupo, e o grupo tem de 2 a 3 pessoas.
+
 ## Prazos
 
 Confirmados em 22/09/2026. Estas datas substituem as do Plano de Aula.
 
-- Apresentação: 24/09 (qui)
+- Apresentação: 24/09 (qui), turma 02P11
 - P1: 25/09 (sex)
 - Entrega final: 27/09 (dom)
