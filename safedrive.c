@@ -136,8 +136,42 @@ void carregaDadosIniciais (double matrixA[][2], double matrixB[][3], double matr
     }
 }
 
-void insirirNovaAmostra (){
-    printf("[Ainda não implementado]");
+void insirirNovaAmostra (double matrixA[][2], double matrixB[][3], double matrixC[][2], int *amostras){
+    double velocidadeAtual, velocidadeCarroDaFrente, radar, lidar, camera,
+           distanciaFaixaEsquerda, distanciaFaixaDireita;
+
+    printf("Velocidade atual (km/h): ");
+    scanf("%lf", &velocidadeAtual);
+
+    printf("Velocidade do veículo da frente (km/h): ");
+    scanf("%lf", &velocidadeCarroDaFrente);
+
+    printf("Leitura do radar (m): ");
+    scanf("%lf", &radar);
+
+    printf("Leitura do lidar (m): ");
+    scanf("%lf", &lidar);
+
+    printf("Leitura da câmera (m): ");
+    scanf("%lf", &camera);
+
+    printf("Distância da faixa esquerda (m): ");
+    scanf("%lf", &distanciaFaixaEsquerda);
+
+    printf("Distância da faixa direita (m): ");
+    scanf("%lf", &distanciaFaixaDireita);
+
+    matrixA[*amostras][0] = velocidadeAtual;
+    matrixA[*amostras][1] = velocidadeCarroDaFrente;
+
+    matrixB[*amostras][0] = radar;
+    matrixB[*amostras][1] = lidar;
+    matrixB[*amostras][2] = camera;
+
+    matrixC[*amostras][0] = distanciaFaixaEsquerda;
+    matrixC[*amostras][1] = distanciaFaixaDireita;
+
+    *amostras = *amostras + 1;
 }
 
 void relatorioProcessarExebir () {
@@ -150,7 +184,7 @@ void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3],
             carregaDadosIniciais(matrixA, matrixB, matrixC, amostras);
             break;
         case 2:
-            insirirNovaAmostra();
+            insirirNovaAmostra(matrixA, matrixB, matrixC, amostras);
             break;
         case 3:
             relatorioProcessarExebir();
