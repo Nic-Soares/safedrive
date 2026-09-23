@@ -18,6 +18,8 @@
  * - Resultados só são impressos pela função de relatório (Regra E).
  * - Sem struct, alocação dinâmica, ponteiros explícitos ou variáveis
  *   globais: o total de amostras volta para a main pelo return.
+ *
+ * Resumo do enunciado, matrizes e Regras A-E: ver README.md
  */
 
 /* ---------------------------------------------------------------------------
