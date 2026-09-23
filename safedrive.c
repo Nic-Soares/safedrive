@@ -166,8 +166,6 @@ void carregaDadosIniciais (double matrixA[][2], double matrixB[][3], double matr
     }
 }
 
-
-
 void insirirNovaAmostra (double matrixA[][2], double matrixB[][3], double matrixC[][2], int *amostras){
     double velocidadeAtual, velocidadeCarroDaFrente, radar, lidar, camera,
            distanciaFaixaEsquerda, distanciaFaixaDireita;
@@ -257,11 +255,15 @@ void distanciaSeguraFrenagem (double matrixA[][2], double processamento[][2], do
   
 }
 
+void riscoFrontal (double matrixA[][2], double processamento[][2], int status[][3], int amostras) {
+  
+}
+
 void relatorioProcessarExibir (double matrixB[][3], double processamento[][2], int amostras) { // Regra E
     printf("[Relatório ainda não implementado]\n");
 }
 
-void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3], double matrixC[][2], double processamento[][2], int *amostras, double atrito, int sensibilidade) {
+void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3], double matrixC[][2], double processamento[][2], int status[][3], int *amostras, double atrito, int sensibilidade) {
     switch (chosenOption) {
         case 1:
             carregaDadosIniciais(matrixA, matrixB, matrixC, amostras);
@@ -272,6 +274,7 @@ void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3],
         case 3:
             medianaSensores(matrixB, processamento, *amostras);
             distanciaSeguraFrenagem(matrixA, processamento, atrito, sensibilidade, *amostras);
+            riscoFrontal(matrixA, processamento, status, *amostras);
             relatorioProcessarExibir(matrixB, processamento, *amostras);
             break;
         case 4:
@@ -301,7 +304,7 @@ int main(void) {
 
     do {
         chosenOption = menuOptions();
-        delegateChoice(chosenOption, velocidades, sensoresFrontais, sensoresLaterais, processamento, &totalAmostras, atrito, sensibilidade);
+        delegateChoice(chosenOption, velocidades, sensoresFrontais, sensoresLaterais, processamento, status, &totalAmostras, atrito, sensibilidade);
     } while (chosenOption != 4);
 
     return 0;
