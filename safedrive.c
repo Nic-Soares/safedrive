@@ -255,8 +255,25 @@ void distanciaSeguraFrenagem (double matrixA[][2], double processamento[][2], do
   
 }
 
-void riscoFrontal (double matrixA[][2], double processamento[][2], int status[][3], int amostras) {
-  
+void riscoFrontal (double matrixA[][2], double processamento[][2], int status[][3], int amostras) { // Regra C
+    for (int i = 0; i < amostras; i++) {
+        double distValidada = processamento[i][0];            // metros que eu TENHO
+        double distSegura   = processamento[i][1];            // metros que eu PRECISO
+        double metadeSegura = 0.5 * distSegura;               // fronteira entre Atenção e Risco
+        double velRelativa  = matrixA[i][0] - matrixA[i][1];  // km/h: estou me aproximando?
+
+        if (velRelativa <= 0) {
+            status[i][0] = 0;                 // Seguro: o da frente está igual ou mais rápido
+        } else {
+            if (distValidada >= distSegura) {
+                status[i][0] = 0;             // Seguro: tenho o espaço que preciso
+            } else if (distValidada >= metadeSegura) {
+                status[i][0] = 1;             // Atenção: falta espaço, mas tenho ao menos metade
+            } else {
+                status[i][0] = 2;             // Risco de Colisão: nem metade do que preciso
+            }
+        }
+    }
 }
 
 void relatorioProcessarExibir (double matrixB[][3], double processamento[][2], int amostras) { // Regra E
