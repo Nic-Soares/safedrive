@@ -230,8 +230,68 @@ void assistenteFaixa (double matrixA[][2], double matrixC[][2], int status[][3],
 
 }
 
-void relatorioProcessarExibir (double matrixB[][3], double processamento[][2], int amostras) { // Regra E
-  printf("[Relatório ainda não implementado]\n");
+void relatorioProcessarExibir (double matrixA[][2], double matrixB[][3], double matrixC[][2], double processamento[][2], int status[][3], int amostras) { // Regra E
+  if (amostras == 0) {
+    printf("Nenhuma amostra carregada. Use a opção 1 ou 2 antes de processar.\n");
+    return;
+  }
+
+  for (int i = 0; i < amostras; i++) {
+    printf("\n--- Amostra %d ---\n", i + 1);
+
+    // Dados de entrada
+    printf("Velocidade atual: %.1f km/h | Carro da frente: %.1f km/h\n", matrixA[i][0], matrixA[i][1]);
+    printf("Radar: %.1f m | Lidar: %.1f m | Câmera: %.1f m\n", matrixB[i][0], matrixB[i][1], matrixB[i][2]);
+    printf("Faixa esquerda: %.2f m | Faixa direita: %.2f m\n", matrixC[i][0], matrixC[i][1]);
+
+    // Dados processados (Regras A e B)
+    printf("Distância validada: %.1f m | Distância segura: %.1f m\n", processamento[i][0], processamento[i][1]);
+
+    // Status frontal (Regra C)
+    printf("Status frontal: ");
+    if (status[i][0] == 2) {
+      printf("RISCO DE COLISÃO (AEB acionado)\n");
+    } else if (status[i][0] == 1) {
+      printf("ATENÇÃO\n");
+    } else {
+      printf("SEGURO\n");
+    }
+
+    // Status das faixas (Regra D) — j = 1 esquerda, j = 2 direita
+    for (int j = 1; j <= 2; j++) {
+      if (j == 1) {
+        printf("Faixa esquerda: ");
+      } else {
+        printf("Faixa direita: ");
+      }
+
+      if (status[i][j] == 2) {
+        printf("PERIGO DE INVASÃO\n");
+      } else if (status[i][j] == 1) {
+        printf("ATENÇÃO\n");
+      } else {
+        printf("NORMAL\n");
+      }
+    }
+
+    // Status geral: o pior dos três status da linha
+    int pior = status[i][0];
+    if (status[i][1] > pior) {
+      pior = status[i][1];
+    }
+    if (status[i][2] > pior) {
+      pior = status[i][2];
+    }
+
+    printf("STATUS GERAL: ");
+    if (pior == 2) {
+      printf("INTERVENÇÃO CRÍTICA EXIGIDA\n");
+    } else if (pior == 1) {
+      printf("ATENÇÃO\n");
+    } else {
+      printf("NORMAL\n");
+    }
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -251,7 +311,7 @@ void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3],
       distanciaSeguraFrenagem(matrixA, processamento, atrito, sensibilidade, *amostras);
       riscoFrontal(matrixA, processamento, status, *amostras);
       assistenteFaixa(matrixA, matrixC, status, *amostras);
-      relatorioProcessarExibir(matrixB, processamento, *amostras);
+      relatorioProcessarExibir (matrixA, matrixB, matrixC, processamento, status, *amostras);
       break;
     case 4:
       printf("Saindo...\n");
