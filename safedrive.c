@@ -35,7 +35,7 @@ void perguntasIniciais (double *atrito, int *sensibilidade) {
   do {
     printf("Qual é o atrito atual? (asfalto seco ≈ 0.7–0.8, chão molhado ≈ 0.4–0.5, gelo ≈ 0.1–0.2)\n");
     scanf("%lf", atrito);
-  } while (*atrito < 0 || *atrito > 1);
+  } while (*atrito <= 0 || *atrito > 1);  // 0 dividiria por zero na Regra B
 
   do {
     printf("Qual é sua velocidade de reação? (1-Esportivo, 2-Normal, 3-Seguro) \n");
@@ -77,9 +77,14 @@ void carregaDadosIniciais (double matrixA[][2], double matrixB[][3], double matr
   }
 }
 
-void insirirNovaAmostra (double matrixA[][2], double matrixB[][3], double matrixC[][2], int *amostras){
+void inserirNovaAmostra (double matrixA[][2], double matrixB[][3], double matrixC[][2], int *amostras){
   double velocidadeAtual, velocidadeCarroDaFrente, radar, lidar, camera,
          distanciaFaixaEsquerda, distanciaFaixaDireita;
+
+  if (*amostras >= MAX_AMOSTRAS) {
+    printf("Limite de %d amostras atingido. Nenhuma amostra foi inserida.\n", MAX_AMOSTRAS);
+    return;
+  }
 
   printf("Velocidade atual (km/h): ");
   scanf("%lf", &velocidadeAtual);
@@ -304,7 +309,7 @@ void delegateChoice (int chosenOption, double matrixA[][2], double matrixB[][3],
       carregaDadosIniciais(matrixA, matrixB, matrixC, amostras);
       break;
     case 2:
-      insirirNovaAmostra(matrixA, matrixB, matrixC, amostras);
+      inserirNovaAmostra(matrixA, matrixB, matrixC, amostras);
       break;
     case 3:
       medianaSensores(matrixB, processamento, *amostras);
